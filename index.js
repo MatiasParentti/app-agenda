@@ -29,7 +29,7 @@ app.get('/', (request, response) => {
 
 app.get('/info', (request, response) => {
   const date = new Date();
-  
+
 
   response.send('Phonebook has info for ' + Person.note + ' people ' + '<br></br>' + date)
 })
@@ -42,8 +42,8 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.get('/api/persons', (request, response) => {
   Person.find({}).then(notes => {
-     response.json(notes)
-   
+    response.json(notes)
+
   })
 })
 
@@ -58,7 +58,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
 
 
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
   if (body.name === undefined) {
@@ -75,6 +75,7 @@ app.post('/api/persons', (request, response) => {
   person.save().then(savedPerson => {
     response.json(savedPerson)
   })
+    .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
@@ -100,9 +101,11 @@ app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
-
+  console.log(error.name)
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).send({ error: 'name ya existe' })
   }
 
   next(error)

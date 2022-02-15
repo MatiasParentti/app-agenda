@@ -100,12 +100,10 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
-  console.error(error.message)
-  console.log(error.name)
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
-    return response.status(400).send({ error: 'name ya existe' })
+    return response.status(400).send({ error: 'nombre o tel invalidos' })
   }
 
   next(error)

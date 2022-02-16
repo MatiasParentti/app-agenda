@@ -27,12 +27,6 @@ app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
 
-app.get('/info', (request, response) => {
-  const date = new Date();
-
-
-  response.send('Phonebook has info for ' + Person.note + ' people ' + '<br></br>' + date)
-})
 
 app.get('/api/persons/:id', (request, response) => {
   Person.findById(request.params.id).then(note => {
@@ -103,7 +97,7 @@ const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
-    return response.status(400).send({ error: 'nombre o tel invalidos' })
+    return response.status(400).send({ error: 'nombre o numero invalidos' })
   }
 
   next(error)
